@@ -1,6 +1,5 @@
 require "todo/version"
-
-module Todo
-  class Error < StandardError; end
-  # Your code goes here...
-end
+require 'todo/list'
+require 'todo/list/add_item'
+require 'todo/repository'
+require 'todo/repository/in_memory'
