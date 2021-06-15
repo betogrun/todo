@@ -7,9 +7,13 @@ module Todo
       include Dry::Monads[:result, :do]
 
       def call(title:, repository:)
-        validated_title = yield validate_title(title)
-        persist(validated_title, repository)
+        title.
+          then(&apply(:validate_title)).
+          then(&apply(:persist, with: [repository]))
+
+        Success()
       end
+
 
       private
 
@@ -29,6 +33,14 @@ module Todo
         repository.create(changeset)
 
         Success()
+      end
+
+      def apply(name, with: [])
+        Proc.new do |arg|
+          method_args = [arg]
+          method_args = method_args | with if !with.empty?
+          yield method(name).call(*method_args)
+        end
       end
     end
   end
