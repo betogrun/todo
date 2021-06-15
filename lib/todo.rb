@@ -1,3 +1,8 @@
+require 'dry/monads'
+require 'dry/monads/do'
+
+require 'pry-byebug'
+
 require "todo/version"
 require 'todo/list'
 require 'todo/list/add_item'

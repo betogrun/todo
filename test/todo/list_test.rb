@@ -6,8 +6,9 @@ class Todo::ListTest < Minitest::Test
     list = Todo::List.new(repository)
     title = 'Buy milk'
 
-    list.add_item(title: title)
+    result = list.add_item(title: title)
 
+    assert result.success?
     assert_equal(title, repository.last[:title])
   end
 
@@ -16,8 +17,9 @@ class Todo::ListTest < Minitest::Test
     list = Todo::List.new(repository)
     invalid_titles = ['', nil]
 
-    assert_output("Invalid item!\n") do
-      invalid_titles.each { |invalid_title| list.add_item(title: invalid_title) }
+    invalid_titles.each do |invalid_title|
+      result = list.add_item(title: invalid_title)
+      assert result.failure?
     end
   end
 end

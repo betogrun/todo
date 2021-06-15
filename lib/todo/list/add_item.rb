@@ -3,19 +3,20 @@ require 'date'
 
 module Todo
   class List
-    class InvalidItemError < StandardError; end
     class AddItem
+      include Dry::Monads[:result, :do]
+
       def call(title:, repository:)
-        validated_title = validate_title(title)
+        validated_title = yield validate_title(title)
         persist(validated_title, repository)
       end
 
       private
 
       def validate_title(title)
-        raise InvalidItemError, 'Invalid item!' if title&.empty?
+        return Failure(:invalid_item) if title.to_s.empty?
 
-        title
+        Success(title)
       end
 
       def persist(title, repository)
@@ -26,6 +27,8 @@ module Todo
           completed_at: nil
         }
         repository.create(changeset)
+
+        Success()
       end
     end
   end
