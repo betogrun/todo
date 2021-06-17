@@ -9,7 +9,7 @@ module Todo
       def call(title:, repository:)
         title.
           then(&apply(:validate_title)).
-          then(&apply(:persist, with: [repository]))
+          then(&apply(:persist, with: repository))
 
         Success()
       end
@@ -35,10 +35,9 @@ module Todo
         Success()
       end
 
-      def apply(name, with: [])
-        Proc.new do |arg|
-          method_args = [arg]
-          method_args = method_args | with if !with.empty?
+      def apply(name, with: nil)
+        lambda do |arg|
+          method_args = [arg] | Array(with)
           yield method(name).call(*method_args)
         end
       end

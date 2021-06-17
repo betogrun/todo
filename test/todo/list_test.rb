@@ -20,6 +20,7 @@ class Todo::ListTest < Minitest::Test
     invalid_titles.each do |invalid_title|
       result = list.add_item(title: invalid_title)
       assert result.failure?
+      assert_nil repository.last
     end
   end
 end
